@@ -32,9 +32,9 @@ void Stall::pferdeBoxenMallen(QPainter* event){
 }
 
 float Stall::durchschnitalter(){
-    int alter = 0;
+    float alter = 0;
     for(int i=0; i<pferdeboxen.size(); i++){
-        alter = 2023 - pferdeboxen[i]->getGeburtsjahr();
+        alter += 2023 - pferdeboxen[i]->getGeburtsjahr();
     }
 
     return alter/pferdeboxen.size();

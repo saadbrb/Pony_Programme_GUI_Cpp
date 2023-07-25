@@ -114,7 +114,8 @@ void Canvas::paintEvent(QPaintEvent* event) {
                 //if(islandpferd != nullptr && islandpferd->hatEkzemer()) {}}
 
                 if(std::dynamic_pointer_cast<class Islandpferd>(pony)->hatEkzemer()){
-                    boolFrage->setText(QString(" Yes "));
+                    std::string a = "w";
+                    boolFrage->setText(QString(a));
                 }
                 else if (!(std::dynamic_pointer_cast<class Islandpferd>(pony)->hatEkzemer())) {
                     boolFrage->setText(QString(" No "));

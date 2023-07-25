@@ -13,10 +13,15 @@ void Ponyhof::addPonyToReitenBox(){
     qDebug()<<"ich bin hier in ponyhofe und vorher war : size"<<beimReiten.size()<<"\n";
     stall.zumReitenherausholen(beimReiten);
     qDebug()<<"weide war vorher :"<<weide.size()<<"\n";
-    for(int i=0; i<weide.size(); i++){
+//    for(int i=pferdeboxen.size()-1; i>=0; i--){
+//        if(pferdeboxen[i]->istReitbar(2023)){
+//            ponyBox.push_back(pferdeboxen[i]);
+//            pferdeboxen.remove(i);
+//        }
+    for(int i= weide.size()-1; i>=0; i--){
         if(weide[i]->istReitbar(2023)){
             beimReiten.push_back(beimReiten[i]);
-            weide.removeOne(weide[i]);
+            weide.remove(i);
         }
     }
     qDebug()<<"danach "<<weide.size()<<"\n";
