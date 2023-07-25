@@ -27,13 +27,14 @@ public:
     void setName(std::string name);
     int getGeburtsjahr();
     void setGeburtsjahr(int geburtsJahr_);
-    void setzePos(const QPointF& position);
+    void setFirstPunkt(const QPointF& position);
     QPointF getPos();
     void setPos(QPointF);
     qreal minF(qreal x, qreal y);
     qreal maxF(qreal x, qreal y);
     std::string getType();
     virtual void movePony(QPointF) = 0 ;
+    virtual void movePony(double ratioX, double ratioY) = 0 ;
     virtual void mallen(QPainter* objkt) = 0;
     virtual bool istReitbar(int) = 0 ;
     virtual void zeigInfo() = 0;

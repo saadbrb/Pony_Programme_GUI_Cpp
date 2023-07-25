@@ -54,8 +54,8 @@ private:
     Ponyhof ponyhof;
     QVector < std::shared_ptr<Line>> gridLines;
     int cellSizeX, cellSizeY;
-    int breite = this->width();
-    int hoehe = this->height();
+    int breite;
+    int hoehe;
     PonyArt ponyArt;
     Mode mode;
     int ponyCounter = 1;

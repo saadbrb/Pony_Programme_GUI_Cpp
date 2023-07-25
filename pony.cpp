@@ -20,7 +20,7 @@ std::string Pony::getType(){
     return type;
 }
 
-void Pony::setzePos(const QPointF& position){
+void Pony::setFirstPunkt(const QPointF& position){
     firstPunkt = position;
 }
 void Pony::setPos(QPointF p){

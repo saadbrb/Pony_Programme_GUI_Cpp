@@ -14,6 +14,12 @@ void Islandpferd::zeigInfo() {
 QPointF Islandpferd::getRefPunkt() {
     return firstPunkt;
 }
+void Islandpferd::movePony(double ratioX, double ratioY){
+    firstPunkt.rx() = ratioX * firstPunkt.x();
+    firstPunkt.ry() = ratioY * firstPunkt.y();
+    lastPunkt.rx() = ratioX * lastPunkt.x();
+    lastPunkt.ry() = ratioY * lastPunkt.y();
+}
 
 void Islandpferd::movePony(QPointF movePunkt) {
     QPointF tpr = movePunkt - firstPunkt;

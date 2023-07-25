@@ -24,6 +24,9 @@ public:
     std::shared_ptr<Pony>  getPony(QPointF punkt);
     void setPonyPositionImGrid(std::shared_ptr<Pony>);
     void setPonyPositionInBox(std::string ponyOrtBox_, std::shared_ptr<Pony>ponyPtr);
+    void setAllPositionInStall(double ratioX, double ratioY);
+    void setAllPositionInWeide(double ratioX, double ratioY);
+    void setAllPositionInReiten(double ratioX, double ratioY);
 
 
 

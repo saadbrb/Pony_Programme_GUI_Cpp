@@ -19,8 +19,15 @@ void Shetlandpony::movePony(QPointF movePunkt) {
     QPointF tpr = movePunkt - firstPunkt;
     firstPunkt += tpr;
     lastPunkt += tpr;
-}
 
+}
+void Shetlandpony::movePony(double ratioX, double ratioY){
+    firstPunkt.rx() = ratioX * firstPunkt.x();
+    firstPunkt.ry() = ratioY * firstPunkt.y();
+    lastPunkt.rx() = ratioX * lastPunkt.x();
+    lastPunkt.ry() = ratioY * lastPunkt.y();
+
+}
 void Shetlandpony::zeigInfo() {
     //TODO
 }

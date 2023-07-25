@@ -98,7 +98,22 @@ void Ponyhof::setPonyPositionInBox(std::string ponyOrtBox_,std::shared_ptr<Pony>
 
 }
 
-
+void Ponyhof::setAllPositionInStall(double ratioX, double ratioY){
+    auto& ponys = stall.getPonys();
+    for (auto& pony : ponys){
+        pony->movePony(ratioX, ratioY);
+    }
+}
+void Ponyhof::setAllPositionInWeide(double ratioX, double ratioY){
+    for(auto& pony : weide){
+        pony->movePony(ratioX, ratioY);
+    }
+}
+void Ponyhof::setAllPositionInReiten(double ratioX, double ratioY){
+    for(auto& pony : beimReiten){
+        pony->movePony(ratioX, ratioY);
+    }
+}
 QVector<std::shared_ptr<Pony>>& Ponyhof::getReitenBox(){
     return beimReiten;
 }

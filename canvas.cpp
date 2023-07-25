@@ -23,7 +23,8 @@ Canvas::Canvas(QWidget *parent)
     cellSizeX = this->width() / GRID_COLS;
 
     cellSizeY = this->height() / GRID_ROWS;
-
+     breite = this->width();
+     hoehe = this->height();
 }
 
 void Canvas::addPonyToWeide(){
@@ -85,7 +86,19 @@ void Canvas::paintEvent(QPaintEvent* event) {
     painter.fillRect(QRectF(0,0, this->width()-1, this->height()-1), Qt::white);
     painter.drawRect(QRectF(0,0,this->width()-1, this->height()-1));
     if(breite != this->width() || hoehe != this->height()){
+        std::cout<<"breite :"<<breite<<" hoehe: "<<hoehe<<"\n";
+        std::cout<<"this->width() :"<<this->width()<<" this->height(): "<<this->height()<<"\n";
+
         gridLinesCreate();
+
+        double ratioX, ratioY;
+        ratioX = ((double)this->width()) / breite;
+        ratioY = ((double)this->height()) / hoehe;
+        ponyhof.setAllPositionInReiten(ratioX, ratioY);
+        ponyhof.setAllPositionInStall(ratioX, ratioY);
+        ponyhof.setAllPositionInWeide(ratioX, ratioY);
+        breite = this->width();
+        hoehe = this->height();
     }
     if(mode == INFO && dragging){
         pony = ponyhof.getInfo(firstPunkt);
@@ -176,7 +189,6 @@ void Canvas::paintEvent(QPaintEvent* event) {
                 punkt.ry() = y;
                 ponya->movePony(punkt);
             }
-
         }
         ponya == nullptr;
 

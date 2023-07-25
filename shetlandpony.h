@@ -18,6 +18,7 @@ public:
     void mallen(QPainter* objkt) override;
     bool isNear(QPointF p) override;
     void movePony(QPointF) override ;
+    void movePony(double ratioX, double ratioY) override ;
     QPointF getRefPunkt() override;
 
 
