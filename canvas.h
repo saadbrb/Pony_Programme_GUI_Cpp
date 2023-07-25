@@ -6,6 +6,7 @@
 #include <QSize>
 #include <QVector>
 #include <QLineEdit>
+#include <memory>
 
 #include "line.h"
 #include "pony.h"
@@ -13,7 +14,7 @@
 
 #define GRID_ROWS 2
 #define GRID_COLS 2
-typedef QVector<Pony*> Grid[GRID_ROWS][GRID_COLS];
+typedef QVector<std::shared_ptr<Pony>> Grid[GRID_ROWS][GRID_COLS];
 
 class Canvas : public QFrame
 {
@@ -37,6 +38,7 @@ public:
     void setPonyArtMode(int mode);
     int getWidth();
     int getheight();
+    void allePonysZumReitenHollen();
 
 
 protected:
@@ -50,18 +52,19 @@ private:
     QPointF lastPunkt;
     Grid grid;
     Ponyhof ponyhof;
-    QVector <Line*> gridLines;
+    QVector < std::shared_ptr<Line>> gridLines;
     int cellSizeX, cellSizeY;
     int breite = this->width();
     int hoehe = this->height();
     PonyArt ponyArt;
     Mode mode;
     int ponyCounter = 1;
-    Pony* pony = nullptr;
+    std::shared_ptr<Pony> pony = nullptr;
     QLineEdit* nameInfo;
     QLineEdit* geburtsJahrInfo;
     QLineEdit* boolFrage;
     QLineEdit* typeInfo;
+    std::shared_ptr<Pony> ponya = nullptr;
 
 
 

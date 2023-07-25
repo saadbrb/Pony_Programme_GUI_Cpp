@@ -51,16 +51,16 @@ Paint::Paint(QWidget *parent)
 }
 
 void Paint::saveImage() {
-    // Größe des Viewports ermitteln
-    QSize viewportSize = canvas->size();
+    // Größe des ViewpfirstPunkts ermitteln
+    QSize viewpfirstPunktSize = canvas->size();
 
     // QImage-Objekt erstellen
-    QImage image(viewportSize, QImage::Format_RGB32);
+    QImage image(viewpfirstPunktSize, QImage::Format_RGB32);
 
     // QPainter-Objekt erstellen, um auf das QImage-Objekt zu zeichnen
     QPainter painter(&image);
 
-    // Den Inhalt des Viewports in das QImage-Objekt zeichnen
+    // Den Inhalt des ViewpfirstPunkts in das QImage-Objekt zeichnen
     canvas->render(&painter);
 
     // Automatisch speichern des Bildes
@@ -202,5 +202,11 @@ void Paint::on_weide_clicked()
 {
 
     canvas->addPonyToWeide();
+}
+
+
+void Paint::on_reitenHollen_clicked()
+{
+    canvas->allePonysZumReitenHollen();
 }
 

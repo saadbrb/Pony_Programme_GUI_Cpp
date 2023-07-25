@@ -8,8 +8,8 @@ class Shetlandpony : public Pony
 private:
     bool kinderlieb;
 public:
-    Shetlandpony(int geburtsJahr_, std::string name_, QPointF ort_,QColor color_, bool kinderlieb_):
-        Pony(geburtsJahr_, name_, ort_, color_), kinderlieb(kinderlieb_){
+    Shetlandpony(int geburtsJahr_, std::string name_, QPointF firstPunkt_,QColor color_, bool kinderlieb_):
+        Pony(geburtsJahr_, name_, firstPunkt_, color_), kinderlieb(kinderlieb_){
         type = "shetland";
     }
     bool istKinderlieb();
@@ -17,6 +17,9 @@ public:
     void zeigInfo() override;
     void mallen(QPainter* objkt) override;
     bool isNear(QPointF p) override;
+    void movePony(QPointF) override ;
+    QPointF getRefPunkt() override;
+
 
 };
 

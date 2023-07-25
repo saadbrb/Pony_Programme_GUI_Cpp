@@ -8,14 +8,22 @@ Stall::Stall()
 int Stall::belegteBoxen(){
     return pferdeboxen.size();
 }
-bool Stall::einstellen(Pony* pony){
+bool Stall::einstellen(std::shared_ptr<Pony> pony){
     pferdeboxen.push_back(pony);
     qDebug()<<"Pony added secussful ";
     qDebug()<<pferdeboxen.size()<<"\n";
 }
-Pony* Stall::herausholen(std::string){
-    //TODO
+void Stall::zumReitenherausholen(QVector<std::shared_ptr<Pony>>& ponyBox){
+    qDebug()<<"ich bin in stall und vorher war "<<pferdeboxen.size()<<"\n";
+    for(int i=pferdeboxen.size()-1; i>=0; i--){
+        if(pferdeboxen[i]->istReitbar(2023)){
+            ponyBox.push_back(pferdeboxen[i]);
+            pferdeboxen.remove(i);
+        }
+    }
+    qDebug()<<"danach ist: "<<pferdeboxen.size()<<"\n";
 }
+
 
 void Stall::pferdeBoxenMallen(QPainter* event){
     for(int i=0; i<pferdeboxen.size(); i++){
@@ -42,7 +50,8 @@ void Stall::clear(){
     pferdeboxen.clear();
 }
 
-QVector<Pony*> Stall::getPonys(){
+
+QVector<std::shared_ptr<Pony>>& Stall::getPonys(){
     return pferdeboxen;
 }
 

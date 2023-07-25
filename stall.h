@@ -8,15 +8,15 @@
 class Stall
 {
 private:
-    QVector<Pony*> pferdeboxen;
+    QVector<std::shared_ptr<Pony>> pferdeboxen;
 public:
     Stall();
     int belegteBoxen();
-    bool einstellen(Pony*);
-    Pony* herausholen(std::string);
+    bool einstellen(std::shared_ptr<Pony>);
+    void zumReitenherausholen(QVector<std::shared_ptr<Pony>>& ponyBox);
     float durchschnitalter();
     void weidegang();
-    QVector<Pony*> getPonys();
+    QVector<std::shared_ptr<Pony> > &getPonys();
     void clear();
     void zeigInfo();
     void pferdeBoxenMallen(QPainter* event);

@@ -36,6 +36,8 @@ private slots:
 
     void on_weide_clicked();
 
+    void on_reitenHollen_clicked();
+
 private:
     Ui::Paint *ui;
     Canvas* canvas;

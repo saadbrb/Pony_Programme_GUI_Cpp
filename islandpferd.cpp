@@ -5,27 +5,39 @@
 bool Islandpferd::hatEkzemer(){
     return ekzemer;
 }
-bool Islandpferd::istReitbar(int) {
-    //TODO
+bool Islandpferd::istReitbar(int diesesJahr) {
+    return (diesesJahr-geburtsJahr) >= 10;
 }
 void Islandpferd::zeigInfo() {
     //TODO
 }
+QPointF Islandpferd::getRefPunkt() {
+    return firstPunkt;
+}
+
+void Islandpferd::movePony(QPointF movePunkt) {
+    QPointF tpr = movePunkt - firstPunkt;
+    firstPunkt += tpr;
+    lastPunkt += tpr;
+}
+
 
 //mallt Circle
 void Islandpferd::mallen(QPainter* objkt){
 
-    rad = std::hypot(ort.x() - ort.x()+3, ort.y() - ort.y()+3);
-    objkt->setPen(QPen(color, 2,Qt::SolidLine));
-    double diameter = rad*2;
-    double x = ort.x() - rad;
-    double y = ort.y() - rad;
+    rad = std::hypot(firstPunkt.x() - lastPunkt.x(), firstPunkt.y() - lastPunkt.y());
+    objkt->setPen(QPen(color, 2, Qt::SolidLine));
+
     objkt->setBrush(color);
 
-    objkt->drawEllipse(QRect(x,y,diameter, diameter));
+    double x = firstPunkt.x() - rad;
+    double y = firstPunkt.y() - rad;
+    double diameter = rad * 2;
+
+    objkt->drawEllipse(QRectF(x, y, diameter, diameter));
 }
 bool Islandpferd::isNear(QPointF p){
 
-    double distance = std::hypot(ort.x() - p.x(), ort.y() - p.y());
+    double distance = std::hypot(firstPunkt.x() - p.x(), firstPunkt.y() - p.y());
     return distance <= rad;
 }

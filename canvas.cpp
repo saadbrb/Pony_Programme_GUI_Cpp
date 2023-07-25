@@ -2,6 +2,14 @@
 #include <QPainterPath>
 #include <random>
 #include <string>
+#include <memory>
+#include <QPainter>
+#include <QDebug>
+#include <vector>
+#include <math.h>
+#include <cmath>
+#include <QPointF>
+#include <QVector>
 #include "shetlandpony.h"
 #include "islandpferd.h"
 #include "QPainter"
@@ -21,7 +29,7 @@ Canvas::Canvas(QWidget *parent)
 void Canvas::addPonyToWeide(){
     ponyhof.addPonyToWeideBox();
     for(int i=0; i<ponyhof.getWeideBox().size(); i++){
-        QPointF ort_;
+        QPointF firstPunkt_;
         cellSizeX = this->width() / GRID_COLS;
 
         cellSizeY = this->height() / GRID_ROWS;
@@ -34,10 +42,32 @@ void Canvas::addPonyToWeide(){
         std::mt19937 gen_(rd_()); // Mersenne-Twister-Generator, der auf rd initialisiert ist
         std::uniform_int_distribution<> dis_(0, (this->height()-3)); // Uniforme Verteilung zwischen 50 und 100
         double y = dis_(gen_);
-        ort_.rx() = x;
-        ort_.ry() = y;
-        ponyhof.getWeideBox()[i]->setPos(ort_);
+        firstPunkt_.rx() = x;
+        firstPunkt_.ry() = y;
+        ponyhof.getWeideBox()[i]->setPos(firstPunkt_);
 
+    }
+}
+void Canvas::allePonysZumReitenHollen(){
+
+    ponyhof.addPonyToReitenBox();
+    for(int i=0; i<ponyhof.getReitenBox().size(); i++){
+        QPointF firstPunkt_;
+        cellSizeX = this->width() / GRID_COLS;
+
+        cellSizeY = this->height() / GRID_ROWS;
+        std::random_device rd; // Initialisiert einen Zufallsgenerator
+        std::mt19937 gen(rd()); // Mersenne-Twister-Generator, der auf rd initialisiert ist
+        std::uniform_int_distribution<> dis(0, cellSizeX-3); // Uniforme Verteilung zwischen 50 und 100
+
+        double x = dis(gen);
+        std::random_device rd_; // Initialisiert einen Zufallsgenerator
+        std::mt19937 gen_(rd_()); // Mersenne-Twister-Generator, der auf rd initialisiert ist
+        std::uniform_int_distribution<> dis_(0, (cellSizeY-3)); // Uniforme Verteilung zwischen 50 und 100
+        double y = dis_(gen_);
+        firstPunkt_.rx() = x;
+        firstPunkt_.ry() = y;
+        ponyhof.getReitenBox()[i]->setPos(firstPunkt_);
     }
 }
 
@@ -64,25 +94,92 @@ void Canvas::paintEvent(QPaintEvent* event) {
             geburtsJahrInfo->setText(QString::number(pony->getGeburtsjahr()));
             if(pony->getType() == "island"){
                 typeInfo->setText(QString("Hat Ekzem: "));
-                if(dynamic_cast<class Islandpferd*>(pony)->hatEkzemer()){
+                //std::dynamic_pointer_cast<Polygone>(graphObjkt)->isNear(lastPunkt)
+                //std::shared_ptr<class Islandpferd> islandpferd = std::dynamic_pointer_cast<class Islandpferd>(pony);
+                //if(pony != nullptr) {
+                //std::shared_ptr<Islandpferd> islandpferd = std::dynamic_pointer_cast<Islandpferd>(pony);
+                //if(islandpferd != nullptr && islandpferd->hatEkzemer()) {}}
+
+                if(std::dynamic_pointer_cast<class Islandpferd>(pony)->hatEkzemer()){
                     boolFrage->setText(QString(" Yes "));
                 }
-                else if (!(dynamic_cast<class Islandpferd*>(pony)->hatEkzemer())) {
+                else if (!(std::dynamic_pointer_cast<class Islandpferd>(pony)->hatEkzemer())) {
                     boolFrage->setText(QString(" No "));
                 }
 
             }
             else if(pony->getType()== "shetland"){
                 typeInfo->setText(QString("Ist Kinderlieb: "));
-                if(dynamic_cast<class Shetlandpony*>(pony)->istKinderlieb()){
+                //if(dynamic_cast<class Shetlandpony*>(pony)->istKinderlieb()){
+
+
+                if (std::dynamic_pointer_cast<class Shetlandpony>(pony)->istKinderlieb()){
                     boolFrage->setText(QString(" Yes "));
                 }
-                else if (!(dynamic_cast<class Shetlandpony*>(pony)->istKinderlieb())) {
+                else if (!std::dynamic_pointer_cast<class Shetlandpony>(pony)->istKinderlieb()) {
                     boolFrage->setText(QString(" No "));
                 }
             }
 
         }
+    }
+    else if(mode == REITEN && dragging){
+
+        if(firstPunkt == lastPunkt){
+            ponya = ponyhof.getPony(firstPunkt);
+        }
+        if(ponya == nullptr){
+
+            qDebug()<<"is a nullptr";
+            return;
+        }
+        if(ponya != nullptr){
+            qDebug()<<"type ";
+            ponya->movePony(lastPunkt);
+            ponyhof.allePonysMallen(&painter);
+        }
+
+    }
+    else if(!dragging){
+        //p is referencePoint
+        if(ponya != nullptr){
+            QPointF p = ponya->getRefPunkt();
+            cellSizeX = this->width() / GRID_COLS;
+            cellSizeY = this->height() / GRID_ROWS;
+            if((p.x()>= 0 && p.x()<cellSizeX) && (p.y()>=0 && p.y()<cellSizeY)){
+                //"stall"; "reiten";"weide";
+                // bin reiten
+                ponyhof.setPonyPositionInBox("reiten",ponya);
+            }
+
+            else if ((p.x()>= 0 && p.x()<(cellSizeX*60) / 100) && (p.y()>=cellSizeY && p.y()<this->height()-1)) {
+                //ich bin am stall
+                ponyhof.setPonyPositionInBox("stall",ponya);
+            }
+            else if ((p.x()>= cellSizeX && p.x()<(this->width()-1) && (p.y()>=0 && p.y()<this->height()))) {
+                //ich bin am weide
+                ponyhof.setPonyPositionInBox("weide",ponya);
+            }
+            else if ((p.x()>= (cellSizeX*60) / 100) && p.x()<(cellSizeX) && (p.y()>=cellSizeY && p.y()<this->height()-1)) {
+                //ich bin am leer
+                QPointF punkt;
+                std::random_device rd; // Initialisiert einen Zufallsgenerator
+                std::mt19937 gen(rd()); // Mersenne-Twister-Generator, der auf rd initialisiert ist
+                std::uniform_int_distribution<> dis(0, cellSizeX-3); // Uniforme Verteilung zwischen 50 und 100
+
+                double x = dis(gen);
+                std::random_device rd_; // Initialisiert einen Zufallsgenerator
+                std::mt19937 gen_(rd_()); // Mersenne-Twister-Generator, der auf rd initialisiert ist
+                std::uniform_int_distribution<> dis_(cellSizeY, this->height()-2); // Uniforme Verteilung zwischen 50 und 100
+                double y = dis_(gen_);
+                punkt.rx() = x;
+                punkt.ry() = y;
+                ponya->movePony(punkt);
+            }
+
+        }
+        ponya == nullptr;
+
     }
     gridLinesPainter(&painter);
     ponyhof.allePonysMallen(&painter);
@@ -99,7 +196,7 @@ void Canvas::mousePressEvent(QMouseEvent* event){
     }
 }
 void Canvas::mouseMoveEvent(QMouseEvent* event){
-    if((event->button() & Qt::LeftButton) && dragging){
+    if((event->buttons() & Qt::LeftButton) && dragging){
         lastPunkt = event->pos();
         update();
     }
@@ -129,7 +226,7 @@ void Canvas::addPonyToStall(int ponyAnzahl){
         for(int i=0; i<ponyAnzahl; i++){
             cellSizeX = getWidth() / GRID_COLS;
             cellSizeY = getheight() / GRID_ROWS;
-            QPointF ort;
+            QPointF firstPunkt_;
             std::random_device rd; // Initialisiert einen Zufallsgenerator
             std::mt19937 gen(rd()); // Mersenne-Twister-Generator, der auf rd initialisiert ist
             std::uniform_int_distribution<> dis(0, ((cellSizeX*60) / 100)-3); // Uniforme Verteilung zwischen 50 und 100
@@ -139,8 +236,8 @@ void Canvas::addPonyToStall(int ponyAnzahl){
             std::mt19937 gen_(rd_()); // Mersenne-Twister-Generator, der auf rd initialisiert ist
             std::uniform_int_distribution<> dis_(cellSizeY, (this->height()-3)); // Uniforme Verteilung zwischen 50 und 100
             double y = dis_(gen_);
-            ort.rx() = x;
-            ort.ry() = y;
+            firstPunkt_.rx() = x;
+            firstPunkt_.ry() = y;
 
             std::random_device ya; //Zufallszahlengenerator
             std::mt19937 qa(ya()); //Mersenne Twister 19937 Generator, mit rd als Seed
@@ -151,14 +248,14 @@ void Canvas::addPonyToStall(int ponyAnzahl){
             ponyCounter++;
             bool kinderLieb = std::rand() % 2;
 
-            ponyhof.addPonyToStall(new class Shetlandpony(randomYear,name, ort,Qt::red, kinderLieb));
+            ponyhof.addPonyToStall(std::make_shared<class Shetlandpony>(randomYear,name, firstPunkt_,Qt::red, kinderLieb));
         }
     }
     else if (ponyArt == Islandpferd) {
         for(int i=0; i<ponyAnzahl; i++){
             cellSizeX = this->width() / GRID_COLS;
             cellSizeY = this->height() / GRID_ROWS;
-            QPointF ort;
+            QPointF firstPunkt_;
             std::random_device rd; // Initialisiert einen Zufallsgenerator
             std::mt19937 gen(rd()); // Mersenne-Twister-Generator, der auf rd initialisiert ist
             std::uniform_int_distribution<> dis(0, ((cellSizeX*60) / 100)-3); // Uniforme Verteilung zwischen 50 und 100
@@ -168,8 +265,8 @@ void Canvas::addPonyToStall(int ponyAnzahl){
             std::mt19937 gen_(rd_()); // Mersenne-Twister-Generator, der auf rd initialisiert ist
             std::uniform_int_distribution<> dis_(cellSizeY, (this->height()-3)); // Uniforme Verteilung zwischen 50 und 100
             double y = dis_(gen_);
-            ort.rx() = x;
-            ort.ry() = y;
+            firstPunkt_.rx() = x;
+            firstPunkt_.ry() = y;
             std::random_device ya; //Zufallszahlengenerator
             std::mt19937 qa(ya()); //Mersenne Twister 19937 Generator, mit rd als Seed
             std::uniform_int_distribution<> distra(1950, 2023); //Uniforme Verteilung
@@ -179,7 +276,7 @@ void Canvas::addPonyToStall(int ponyAnzahl){
             ponyCounter++;
             bool ekzemer = std::rand() % 2;
 
-            ponyhof.addPonyToStall(new class Islandpferd(randomYear,name, ort,Qt::blue, ekzemer));
+            ponyhof.addPonyToStall(std::make_shared< class Islandpferd>(randomYear,name, firstPunkt_,Qt::blue, ekzemer));
         }}
     update();
 }
@@ -207,34 +304,36 @@ void Canvas::gridLinesCreate(){
     cellSizeX = this->width() / GRID_COLS;
 
     cellSizeY = this->height() / GRID_ROWS;
-    QPointF firstPunkt;
-    firstPunkt.rx() = 0;
-    firstPunkt.ry() = cellSizeY;
-    QPointF lastPunkt;
-    lastPunkt.rx() = cellSizeX;
-    lastPunkt.ry() = cellSizeY;
-    gridLines.push_back(new Line(firstPunkt, lastPunkt));
+    QPointF firstPunkt_;
+    firstPunkt_.rx() = 0;
+    firstPunkt_.ry() = cellSizeY;
+    QPointF lastPunkt_;
+    lastPunkt_.rx() = cellSizeX;
+    lastPunkt_.ry() = cellSizeY;
+    gridLines.push_back(std::make_shared<class Line>(firstPunkt_, lastPunkt_));
 
-    firstPunkt.rx() = cellSizeX;
-    firstPunkt.ry() = 0;
-    lastPunkt.rx() = cellSizeX;
-    lastPunkt.ry() = this->height();
-    gridLines.push_back(new Line(firstPunkt, lastPunkt));
+    firstPunkt_.rx() = cellSizeX;
+    firstPunkt_.ry() = 0;
+    lastPunkt_.rx() = cellSizeX;
+    lastPunkt_.ry() = this->height();
+    gridLines.push_back(std::make_shared< Line>(firstPunkt_, lastPunkt_));
 
-    firstPunkt.rx() = (cellSizeX*60) / 100;
-    firstPunkt.ry() = cellSizeY;
-    lastPunkt.rx() = (cellSizeX*60) / 100;
-    lastPunkt.ry() = this->height();
-    gridLines.push_back(new Line(firstPunkt, lastPunkt));
+    firstPunkt_.rx() = (cellSizeX*60) / 100;
+    firstPunkt_.ry() = cellSizeY;
+    lastPunkt_.rx() = (cellSizeX*60) / 100;
+    lastPunkt_.ry() = this->height();
+    gridLines.push_back(std::make_shared< Line>(firstPunkt_, lastPunkt_));
 
 }
 
 
 void Canvas::gridLinesDelete(){
-    for(int i=0; i<gridLines.size(); i++){
-        delete   gridLines[i];
+    //    for(int i=0; i<gridLines.size(); i++){
+    //        delete   gridLines[i];
+    //    }
+    if(gridLines.size()>0){
+        gridLines.clear();
     }
-    gridLines.clear();
 }
 
 void Canvas::gridLinesPainter(QPainter* painter){

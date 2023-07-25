@@ -1,3 +1,5 @@
+#include <memory>
+
 #include "pony.h"
 
 
@@ -19,14 +21,16 @@ std::string Pony::getType(){
 }
 
 void Pony::setzePos(const QPointF& position){
-    ort = position;
+    firstPunkt = position;
 }
 void Pony::setPos(QPointF p){
-    ort = p;
+    firstPunkt = p;
+    lastPunkt.rx() = firstPunkt.x() + 6;
+    lastPunkt.ry() = firstPunkt.y() + 6;
 }
 
 QPointF Pony::getPos(){
-    return ort;
+    return firstPunkt;
 }
 
 qreal Pony::minF(qreal x, qreal y){

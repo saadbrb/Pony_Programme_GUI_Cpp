@@ -104,6 +104,13 @@
             </property>
            </widget>
           </item>
+          <item>
+           <widget class="QPushButton" name="reitenHollen">
+            <property name="text">
+             <string>Alle Ponys zum Reiten Holen</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </item>
         <item>
